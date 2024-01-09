@@ -1,0 +1,79 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import numpy as np 
+import matplotlib.pyplot as plt 
+from sklearn.linear_model import LogisticRegression,LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+from xgboost import XGBRegressor
+from catboost import CatBoostRegressor
+from lightgbm import LGBMRegressor
+from sklearn.svm import SVR
+from sklearn.ensemble import StackingRegressor
+from sklearn.metrics import accuracy_score
+
+
+
+df= pd.read_csv('/kaggle/input/cardiovascular-disease-dataset/Cardiovascular_Disease_Dataset/Cardiovascular_Disease_Dataset.csv')
+
+df.head(5)
+
+X=df.drop(columns="target")
+Y=df["target"]
+
+Y.value_counts()
+
+X_train,X_test,y_train,y_test=train_test_split(X,Y,test_size=0.3,random_state=20)
+
+print(X.shape,X_train.shape,y_train.shape)
+print(Y.shape,X_test.shape,y_test.shape)
+
+df["target"]
+
+df.info
+
+df.columns
+
+df.describe
+
+
+X_train.shape
+
+
+
+
+algo=[
+    ( "model1", LinearRegression()),
+    
+    ( "model3", RandomForestRegressor()),
+    ( "model4" ,DecisionTreeRegressor()),
+    ( "model5" ,XGBRegressor()),
+    ( "model6" ,CatBoostRegressor()),
+    ("model7", SVR())
+    
+    
+]
+level1=RandomForestRegressor()
+
+model=StackingRegressor(estimators=algo,final_estimator=level1,cv=5)
+model.fit(X_train,y_train)
+
+predict_y=model.predict(X_test)
+# accuracy_score(predict_y,y_test)
+for pred in predict_y:
+    if (pred+1)/2 == 1 or 0:
+        continue
+    else:
+        pass
+
+print(pred)
+
+input_value=(132514,43,1,0,138,295,1,1,153,0,3.2,2,2)
+array_input_value=np.asarray(input_value)
+reshape_array_input=array_input_value.reshape(1,-1)
+predict_u=model.predict(reshape_array_input)
+if (predict_u[0]==0):
+    print("You have absence of Heart disease")
+else:
+    print("You have heart diseases")
+    
